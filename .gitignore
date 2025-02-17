@@ -1,0 +1,24 @@
+# Node modules - don't push dependencies
+node_modules/
+
+# Logs - ignore log files
+logs/
+*.log
+debug.log
+error.log
+
+# Environment variables - sensitive info like API keys
+.env
+
+# System files - OS-specific files that shouldn't be committed
+.DS_Store
+Thumbs.db
+
+# Build files (if applicable)
+dist/
+build/
+
+# IDE-specific files - Ignore JetBrains/WebStorm settings
+.idea/
+.vscode/
+*.iml

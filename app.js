@@ -1,31 +1,32 @@
-require('dotenv').config();
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
+require('dotenv').config(); // Reads variables from .env so they can be used in the code
+const express = require('express'); // Creates an express app (web server for Node, used to handle http requests)
+const cors = require('cors'); // Allows you to specify which domains can access your API, blocks others)
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const SKIDDLE_API_KEY = process.env.SKIDDLE_API_KEY;
-const BASE_URL = 'https://www.skiddle.com/api/v1';
+// Import Routes
+const eventRoutes = require('./routes/routes'); // handles event operations
+const authRoutes = require('./routes/authRoutes'); // Handles authentication for security
+const responseRoutes = require('./routes/responseRoutes'); // Import response routes
 
-app.get('/events', async (req, res) => {
-    try {
-        const { keyword, location } = req.query;
-        const response = await axios.get(`${BASE_URL}/events/`, {
-            params: {
-                api_key: SKIDDLE_API_KEY,
-                keyword,
-                latitude: location?.lat,
-                longitude: location?.lng,
-            },
-        });
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching events' });
-    }
+app.use('/api', eventRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api', responseRoutes);
+
+// Middleware to catch 404 errors (route not found)
+app.use((req, res, next) => {
+    const err = new Error('Invalid input');
+    err.status = 404;
+    err.msg = 'Invalid input';
+    next(err);
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Middlware for general Error Handler
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).send({ msg: err.msg || 'Internal Server Error' });
+});
+
+module.exports = app;
