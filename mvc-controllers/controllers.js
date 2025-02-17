@@ -1,5 +1,6 @@
 const axios = require('axios'); // Imports axios, used to make API requests
 const Event = require('../mvc-models/models.js'); // Imports models
+const { generateGoogleCalendarLink } = require("../google/googlecalendar"); // Imports Google Calendar link generator
 
 const SKIDDLE_API_KEY = process.env.SKIDDLE_API_KEY; // Variable for Skiddle APi key
 const BASE_URL = 'https://www.skiddle.com/api/v1'; // URL for skiddle api
@@ -42,16 +43,40 @@ const fetchAndSaveEvents = (req, res, next) => {
         });
 };
 
-
-
 // Fetch events from MongoDB
 const getLocalEvents = async (req, res) => {
     try {
-        const events = await Event.find(); // queries all events from MongoDB & waits for respons ebefore moving to the next line
+        const events = await Event.find(); // queries all events from MongoDB & waits for response before moving to the next line
         res.json(events);
     } catch (error) {
         res.status(500).json({ error: 'Error fetching events from database' });
     }
 };
 
-module.exports = { fetchAndSaveEvents, getLocalEvents };
+// Fetch Google Calendar Link for an event
+const getCalendarLink = async (req, res) => {
+    try {
+        const eventId = req.params.eventId; // Get event ID from request
+        const event = await Event.findById(eventId); // Fetch event details from database
+
+        if (!event) { // If no event is found, return error
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        // Construct event object to generate Google Calendar link
+        const eventDetails = {
+            title: event.title,
+            description: event.description,
+            location: event.venue,
+            startTime: new Date(event.date).toISOString(), // Convert to ISO format
+            endTime: new Date(new Date(event.date).getTime() + 2 * 60 * 60 * 1000).toISOString(), // Assume event lasts 2 hours
+        };
+
+        const calendarLink = generateGoogleCalendarLink(eventDetails); // Generate calendar link
+        res.json({ calendarLink }); // Send link as response
+    } catch (error) {
+        res.status(500).json({ error: "Error generating Google Calendar link" });
+    }
+};
+
+module.exports = { fetchAndSaveEvents, getLocalEvents, getCalendarLink };
