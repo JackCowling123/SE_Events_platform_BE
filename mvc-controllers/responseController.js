@@ -1,4 +1,4 @@
-const Response = require('../mvc-models/responseModel');
+const Response = require('../mvc-models/responseModels');
 
 // Set or update user response for an event
 const setResponse = async (req, res) => {
