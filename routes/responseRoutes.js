@@ -1,6 +1,6 @@
 const express = require('express');
 const { setResponse, getEventResponses, getUserResponse } = require('../mvc-controllers/responseController');
-const { authenticate } = require('../middlewares/authMiddlewares'); // Gets authentication middlewear, ensures only logged in users can access certain routes
+const { authenticate } = require('../middlewares/authMiddlewears.js'); // Gets authentication middlewear, ensures only logged in users can access certain routes
 
 const router = express.Router();
 
@@ -8,9 +8,9 @@ const router = express.Router();
 router.post('/response', authenticate, setResponse);
 
 // Get all responses for a specific event (public)
-router.get('/response/event/:eventId', getEventResponses);
+//router.get('/response/event/:eventId', getEventResponses);
 
 // Get user’s response for an event. Accessable if logged int
-router.get('/response/user/:eventId', authenticate, getUserResponse);
+//router.get('/response/user/:eventId', authenticate, getUserResponse);
 
 module.exports = router;
