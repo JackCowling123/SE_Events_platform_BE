@@ -1,6 +1,6 @@
 const express = require('express');
 const { setResponse, getEventResponses, getUserResponse } = require('../mvc-controllers/responseController');
-const { authenticate } = require('../middlewares/authMiddleware'); // Gets authentication middlewear, ensures only logged in users can access certain routes
+const { authenticate } = require('../middlewares/authMiddlewares'); // Gets authentication middlewear, ensures only logged in users can access certain routes
 
 const router = express.Router();
 
