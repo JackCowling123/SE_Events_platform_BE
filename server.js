@@ -3,17 +3,13 @@ const connectDB = require("./config/db"); // Connect to NoSQL DB, MongoDB. Setup
 
 const PORT = process.env.PORT || 9090; // Uses environment variable PORT or defaults to 9090 if running locally
 
-const startServer = async () => {
-    try {
-        await connectDB(); // Ensures MongoDB is connected before starting the server
-
-        app.listen(PORT, () => { // Makes the app listen for requests
-            console.log(`Server running on port ${PORT}`); // Logs successful server startup
+connectDB()
+    .then(() => {
+        app.listen(PORT, () => { // Ensures server starts only if DB connects
+            console.log(`✅ Server running on port ${PORT}`);
         });
-    } catch (error) {
-        console.error("Server failed to start:", error); // Logs error if server fails to start
-        process.exit(1); // Stops server if startup failed
-    }
-};
-
-startServer();
+    })
+    .catch((error) => {
+        console.error("Server failed to start due to DB connection error:", error);
+        process.exit(1); // Stops server if MongoDB connection fails
+    });
