@@ -12,6 +12,7 @@ const eventRoutes = require('./routes/routes'); // handles event operations
 const authRoutes = require('./routes/authRoutes'); // Handles authentication for security
 const responseRoutes = require('./routes/responseRoutes'); // Import response routes
 
+
 app.use('/api', eventRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', responseRoutes);

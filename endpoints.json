@@ -1,0 +1,132 @@
+{
+  "GET /api": {
+    "description": "Serves up a JSON representation of all available endpoints of the API",
+    "queries": [],
+    "exampleResponse": {
+      "GET /api/events": {
+        "description": "Returns an array of all events",
+        "queries": [],
+        "exampleResponse": {
+          "events": [
+            {
+              "_id": "event123",
+              "title": "Music Fest",
+              "description": "Live music in Manchester",
+              "date": "2025-03-15T18:00:00"
+            }
+          ]
+        }
+      },
+      "POST /api/response": {
+        "description": "Allows users to RSVP to an event",
+        "queries": [],
+        "exampleRequest": {
+          "eventId": "event123",
+          "response": "going"
+        },
+        "exampleResponse": {
+          "message": "Response updated to 'going'",
+          "response": {
+            "userId": "user123",
+            "eventId": "event123",
+            "response": "going"
+          }
+        }
+      },
+      "GET /api/response/event/:eventId": {
+        "description": "Retrieves all responses for a specific event",
+        "queries": [],
+        "exampleResponse": {
+          "responses": [
+            {
+              "userId": "user123",
+              "eventId": "event123",
+              "response": "going"
+            }
+          ]
+        }
+      },
+      "GET /api/response/user/:eventId": {
+        "description": "Retrieves the authenticated user's response for a specific event",
+        "queries": [],
+        "exampleResponse": {
+          "response": {
+            "userId": "user123",
+            "eventId": "event123",
+            "response": "going"
+          }
+        }
+      },
+      "POST /api/calendar/user/add": {
+        "description": "Adds an event to the authenticated user's Google Calendar",
+        "queries": [],
+        "exampleRequest": {
+          "title": "Music Fest",
+          "description": "Live music in Manchester",
+          "startTime": "2025-03-15T18:00:00",
+          "endTime": "2025-03-15T21:00:00"
+        },
+        "exampleResponse": {
+          "message": "Event added to Google Calendar",
+          "event": {
+            "id": "google_event_id",
+            "summary": "Music Fest"
+          }
+        }
+      },
+      "GET /api/events/save": {
+        "description": "Fetches events from Skiddle API and stores them in MongoDB",
+        "queries": [],
+        "exampleResponse": {
+          "message": "Events successfully saved"
+        }
+      },
+      "GET /api/event/:eventId/calendar-link": {
+        "description": "Retrieves a link to add an event to Google Calendar",
+        "queries": [],
+        "exampleResponse": {
+          "calendarLink": "https://calendar.google.com/..."
+        }
+      },
+      "GET /api/events/local": {
+        "description": "Retrieves saved events from MongoDB",
+        "queries": [],
+        "exampleResponse": {
+          "events": [
+            {
+              "_id": "event456",
+              "title": "Tech Conference",
+              "description": "A conference about the latest in tech",
+              "date": "2025-04-10T10:00:00"
+            }
+          ]
+        }
+      },
+      "POST /api/auth/register": {
+        "description": "Registers a new user",
+        "queries": [],
+        "exampleRequest": {
+          "name": "John Doe",
+          "email": "johndoe@example.com",
+          "password": "securepassword"
+        },
+        "exampleResponse": {
+          "message": "User registered successfully",
+          "userId": "user123"
+        }
+      },
+      "POST /api/auth/login": {
+        "description": "Logs in an existing user",
+        "queries": [],
+        "exampleRequest": {
+          "email": "johndoe@example.com",
+          "password": "securepassword"
+        },
+        "exampleResponse": {
+          "message": "Login successful",
+          "token": "jwt_token_here"
+        }
+      }
+    }
+  }
+}
