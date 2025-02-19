@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 
 // Generate JWT Token
 const generateToken = (user) => { //generates JWT token for authetication each time they log in
+    console.log("🟢 Generating Token for User:", user.email, "Role:", user.role);
     return jwt.sign(
         { id: user._id, email: user.email, role: user.role }, //this is the payload inside the token
         process.env.JWT_SECRET, // secret key used to encrypt and verify token
@@ -29,12 +30,19 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create new user
-        const newUser = new User({ name, email, password: hashedPassword, userRole });
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            role: userRole,
+        });
         await newUser.save(); // saves to MongoDB
+
+        console.log("✅ New User Saved with Role:", newUser.role);
 
         // Generate token and sends back to frontend for use
         const token = generateToken(newUser);
-        res.status(201).json({ message: 'User registered', token });
+        res.status(201).json({ message: 'User registered', token, role: newUser.role });
     } catch (error) {
         res.status(500).json({ error: 'Server error' });
     }
