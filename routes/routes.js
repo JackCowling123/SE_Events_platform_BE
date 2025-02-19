@@ -13,6 +13,7 @@ router.get("/event/:eventId/calendar-link", getCalendarLink);
 // Retrieve saved events from MongoDB
 router.get('/events/local', getLocalEvents);
 
-router.get("/api/events/:id", getEventById);
+router.get("/events/:id", getEventById);
+
 
 module.exports = router;

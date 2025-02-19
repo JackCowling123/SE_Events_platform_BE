@@ -81,18 +81,18 @@ const getCalendarLink = async (req, res) => {
 
 const getEventById = async (req, res) => {
     try {
-        const eventId = req.params.id;  // Get event ID from URL
-        const event = await Event.findById(eventId);  // Query MongoDB for the event
+        const eventId = req.params.id;
+        const event = await Event.findById(eventId);
 
         if (!event) {
             return res.status(404).json({ message: "Event not found" });
         }
-
-        res.json(event);  // Send the event data back
+        res.json(event);
     } catch (error) {
-        console.error("Error fetching event by ID:", error);
         res.status(500).json({ message: "Server error" });
     }
 };
+
+
 
 module.exports = { fetchAndSaveEvents, getLocalEvents, getCalendarLink, getEventById };
