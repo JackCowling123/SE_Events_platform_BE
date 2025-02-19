@@ -52,6 +52,21 @@ const getLocalEvents = async (req, res) => {
         res.status(500).json({ error: 'Error fetching events from database' });
     }
 };
+// Creates events if you are admin
+const createEvent = async (req, res) => {
+    try {
+        const { title, date, venue, description, image } = req.body;
+
+        const newEvent = new Event({ title, date, venue, description, image });
+        await newEvent.save();
+
+        res.status(201).json({ message: "Event created successfully", event: newEvent });
+    } catch (error) {
+        console.error("❌ Error creating event:", error);
+        res.status(500).json({ error: "Server error creating event" });
+    }
+};
+
 
 // Fetch Google Calendar Link for an event
 const getCalendarLink = async (req, res) => {
@@ -95,4 +110,4 @@ const getEventById = async (req, res) => {
 
 
 
-module.exports = { fetchAndSaveEvents, getLocalEvents, getCalendarLink, getEventById };
+module.exports = { fetchAndSaveEvents, getLocalEvents, getCalendarLink, getEventById, createEvent };

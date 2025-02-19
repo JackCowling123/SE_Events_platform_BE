@@ -14,17 +14,26 @@ const generateToken = (user) => { //generates JWT token for authetication each t
 // User Signup
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
+        let userRole;
 
         // Check if user already exists
         let existingUser = await User.findOne({ email }); // findOne is a mongoose operation used to see if it's already in the database. User is the imported function above
         if (existingUser) return res.status(400).json({ error: 'User already exists' }); //if user exists
 
+
+
+        if (role === "admin") {
+            userRole = "admin";
+        } else {
+            userRole = "user";
+        }
+
         // Hashes password, turning it into something really long and hard to guess
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create new user
-        const newUser = new User({ name, email, password: hashedPassword });
+        const newUser = new User({ name, email, password: hashedPassword, userRole });
         await newUser.save(); // saves to MongoDB
 
         // Generate token and sends back to frontend for use
@@ -49,9 +58,14 @@ const loginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
-        // Generate token
-        const token = generateToken(user);
-        res.json({ message: 'Login successful', token });
+        // Generate token & adds userrole in there
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        res.json({ token, role: user.role });
     } catch (error) {
         res.status(500).json({ error: 'Server error' });
     }

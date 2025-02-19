@@ -5,9 +5,6 @@ const setResponse = async (req, res) => {
         const { eventId, response } = req.body;
         const userId = req.user.id; // Ensure user ID is retrieved from token
 
-        console.log(`🟢 User ${userId} is setting response for Event ${eventId}: ${response}`);
-
-        // Validate response type
         if (!['going', 'maybe', 'not going'].includes(response)) {
             return res.status(400).json({ error: "Invalid response. Choose 'going', 'maybe', or 'not going'." });
         }
@@ -27,7 +24,6 @@ const setResponse = async (req, res) => {
             return res.json({ message: `Response set to '${response}'`, response: newResponse });
         }
     } catch (error) {
-        console.error("❌ Error setting user response:", error);
         res.status(500).json({ error: "Server error updating response" });
     }
 };
@@ -37,8 +33,6 @@ const getUserResponse = async (req, res) => {
         const userId = req.user.id; // Get user ID from token
         const { eventId } = req.params;
 
-        console.log(`🟢 Fetching response for user ${userId} and event ${eventId}`);
-
         const response = await Response.findOne({ userId, eventId });
 
         if (!response) {
@@ -47,7 +41,6 @@ const getUserResponse = async (req, res) => {
 
         res.json({ response });
     } catch (error) {
-        console.error("❌ Error fetching user response:", error);
         res.status(500).json({ error: "Server error fetching response" });
     }
 };
