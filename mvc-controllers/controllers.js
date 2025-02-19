@@ -55,17 +55,31 @@ const getLocalEvents = async (req, res) => {
 // Creates events if you are admin
 const createEvent = async (req, res) => {
     try {
-        const { title, date, venue, description, image } = req.body;
+        const { title, date, venue, description, image, skiddleId } = req.body;
 
-        const newEvent = new Event({ title, date, venue, description, image });
+        // IF skiddleID doesn't exist create a new onegit
+        const eventSkiddleId = skiddleId || Math.floor(100000 + Math.random() * 900000).toString();
+
+        console.log("Creating Event:", { title, date, venue, description, image, skiddleId: eventSkiddleId });
+
+        const newEvent = new Event({
+            skiddleId: eventSkiddleId,
+            title,
+            date,
+            venue,
+            description,
+            image: image || "",
+        });
+
         await newEvent.save();
 
         res.status(201).json({ message: "Event created successfully", event: newEvent });
     } catch (error) {
-        console.error("❌ Error creating event:", error);
-        res.status(500).json({ error: "Server error creating event" });
+        console.error("Error creating event:", error);
+        res.status(500).json({ error: error.message || "Server error creating event" });
     }
 };
+
 
 
 // Fetch Google Calendar Link for an event
