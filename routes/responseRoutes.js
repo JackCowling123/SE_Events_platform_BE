@@ -11,6 +11,6 @@ router.post('/response', authenticate, setResponse);
 //router.get('/response/event/:eventId', getEventResponses);
 
 // Get user’s response for an event. Accessable if logged int
-//router.get('/response/user/:eventId', authenticate, getUserResponse);
+router.get('/response/user/:eventId', authenticate, getUserResponse);
 
 module.exports = router;

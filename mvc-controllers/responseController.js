@@ -1,10 +1,11 @@
 const Response = require('../mvc-models/responseModels');
 
-// Set or update user response for an event
 const setResponse = async (req, res) => {
     try {
         const { eventId, response } = req.body;
-        const userId = req.user.id; // Get user ID from the authenticated request
+        const userId = req.user.id; // Ensure user ID is retrieved from token
+
+        console.log(`🟢 User ${userId} is setting response for Event ${eventId}: ${response}`);
 
         // Validate response type
         if (!['going', 'maybe', 'not going'].includes(response)) {
@@ -12,10 +13,10 @@ const setResponse = async (req, res) => {
         }
 
         // Find existing response
-        let existingResponse = await Response.findOne({ userId, eventId }); //calls imported Response function
+        let existingResponse = await Response.findOne({ userId, eventId });
 
         if (existingResponse) {
-            // Update exsisting respomse
+            // Update existing response
             existingResponse.response = response;
             await existingResponse.save();
             return res.json({ message: `Response updated to '${response}'`, response: existingResponse });
@@ -26,8 +27,30 @@ const setResponse = async (req, res) => {
             return res.json({ message: `Response set to '${response}'`, response: newResponse });
         }
     } catch (error) {
+        console.error("❌ Error setting user response:", error);
         res.status(500).json({ error: "Server error updating response" });
     }
 };
 
-module.exports = { setResponse };
+const getUserResponse = async (req, res) => {
+    try {
+        const userId = req.user.id; // Get user ID from token
+        const { eventId } = req.params;
+
+        console.log(`🟢 Fetching response for user ${userId} and event ${eventId}`);
+
+        const response = await Response.findOne({ userId, eventId });
+
+        if (!response) {
+            return res.status(404).json({ message: "No response found for this event" });
+        }
+
+        res.json({ response });
+    } catch (error) {
+        console.error("❌ Error fetching user response:", error);
+        res.status(500).json({ error: "Server error fetching response" });
+    }
+};
+
+
+module.exports = { setResponse, getUserResponse };
