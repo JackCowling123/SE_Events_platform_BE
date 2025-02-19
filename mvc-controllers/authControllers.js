@@ -15,6 +15,9 @@ const generateToken = (user) => { //generates JWT token for authetication each t
 const registerUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
+
+        console.log("🔍 Role Received in Backend:", role);
+
         const userRole = role === "admin" ? "admin" : "user";
 
         // Check if user already exists
