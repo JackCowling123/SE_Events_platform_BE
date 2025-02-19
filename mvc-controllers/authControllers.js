@@ -15,19 +15,12 @@ const generateToken = (user) => { //generates JWT token for authetication each t
 const registerUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
-        let userRole;
+        const userRole = role === "admin" ? "admin" : "user";
 
         // Check if user already exists
         let existingUser = await User.findOne({ email }); // findOne is a mongoose operation used to see if it's already in the database. User is the imported function above
         if (existingUser) return res.status(400).json({ error: 'User already exists' }); //if user exists
 
-
-
-        if (role === "admin") {
-            userRole = "admin";
-        } else {
-            userRole = "user";
-        }
 
         // Hashes password, turning it into something really long and hard to guess
         const hashedPassword = await bcrypt.hash(password, 10);
